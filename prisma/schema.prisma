@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model NavbarItem {
+  id        Int          @id @default(autoincrement())
+  title     String
+  url       String?
+  parentId  Int?
+  sortOrder Int          @default(0)
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  slug      String?
+  parent    NavbarItem?  @relation("NavbarHierarchy", fields: [parentId], references: [id])
+  children  NavbarItem[] @relation("NavbarHierarchy")
+
+  @@index([parentId], map: "navbar_items_parentId_fkey")
+  @@map("navbar_items")
+}
+
+model Stat {
+  id        Int      @id @default(autoincrement())
+  label     String
+  value     Int
+  suffix    String?  @default("+")
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("stats")
+}
+
+model Testimonial {
+  id          Int      @id @default(autoincrement())
+  name        String
+  designation String?
+  company     String?
+  image       String?
+  rating      Int      @default(5)
+  content     String   @db.Text
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+model ConsultationRequest {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  email     String
+  subject   String?
+  message   String   @db.Text
+  source    String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("consultation_requests")
+}
+
+model admins {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  email     String   @unique(map: "email") @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  role      String?  @default("admin") @db.VarChar(50)
+  isActive  Boolean? @default(true)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+model QuoteRequest {
+  id           Int      @id @default(autoincrement())
+  category     String
+  services     Json
+  businessName String
+  businessDesc String?  @db.Text
+  turnover     String?
+  contactName  String
+  contactPhone String
+  contactEmail String
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("quote_requests")
+}
