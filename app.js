@@ -16,18 +16,29 @@ import cors from 'cors';
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: "*" }))
+app.use(
+  cors({
+    origin: [
+      "https://test.shivoham.biz",
+      "https://shivoham.biz",
+      "http://localhost:5173"
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })
+);
 
 app.use('/api/navbar', navbarRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/quotes', quotesRoutes);
 app.use('/api/consultations', consultationsRoutes);
-app.use('/api/search',searchRoutes);
+app.use('/api/search', searchRoutes);
 
 
 // ADMIN
-app.use('/api/admin/',adminLoginRoute)
+app.use('/api/admin/', adminLoginRoute)
 app.use('/api/admin/navbar', adminNavbarRoutes);
 app.use('/api/admin/stats', adminStatsRoutes);
 app.use('/api/admin/testimonials', adminTestimonialsRoutes);
