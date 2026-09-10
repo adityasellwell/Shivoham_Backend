@@ -95,3 +95,57 @@ model QuoteRequest {
 
   @@map("quote_requests")
 }
+
+model Faq {
+  id        Int      @id @default(autoincrement())
+  category  String   @db.VarChar(100)
+  question  String   @db.Text
+  answer    String   @db.Text
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model QuoteCategory {
+  id          Int            @id @default(autoincrement())
+  keyId       String         @unique @db.VarChar(100)
+  title       String         @db.VarChar(255)
+  description String         @db.Text
+  icon        String         @default("Shield") @db.VarChar(50)
+  sortOrder   Int            @default(0)
+  isActive    Boolean        @default(true)
+  services    QuoteService[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("quote_categories")
+}
+
+model QuoteService {
+  id               Int           @id @default(autoincrement())
+  quoteCategoryId  Int
+  title            String        @db.VarChar(255)
+  sortOrder        Int           @default(0)
+  isActive         Boolean       @default(true)
+  category         QuoteCategory @relation(fields: [quoteCategoryId], references: [id])
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([quoteCategoryId])
+  @@map("quote_services")
+}
+
+model TurnoverOption {
+  id        Int      @id @default(autoincrement())
+  label     String   @db.VarChar(100)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("turnover_options")
+}
+
