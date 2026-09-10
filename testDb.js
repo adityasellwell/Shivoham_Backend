@@ -21,8 +21,8 @@ const prisma = new PrismaClient();
 
 async function test() {
   try {
-    const users = await prisma.user.findMany();
-    console.log(users);
+    const admins = await prisma.admins.findMany();
+    console.log("Admins in DB:", admins);
   } catch (err) {
     console.error(err);
   } finally {
