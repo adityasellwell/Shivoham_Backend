@@ -149,3 +149,15 @@ model TurnoverOption {
   @@map("turnover_options")
 }
 
+model PartnerLogo {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  image     String   @db.VarChar(500)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("partner_logos")
+}
+

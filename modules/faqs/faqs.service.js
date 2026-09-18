@@ -256,7 +256,7 @@ const defaultCompanyFormationFaqs = [
   {
     category: 'Company Formation',
     question: 'Who is a nominee, and what do they actually do?',
-    answer: 'The nominee is a person you name at incorporation who becomes the member of the OPC if you die or become incapacitated. They have no role, rights or say while you are running the company. Their written consent in Form INC-3 is required, and they can be changed later.'
+    answer: 'An OPC nominee is the person whose name is mentioned in the Memorandum with prior written consent, and who becomes the member of the OPC upon the death or incapacity to contract of the sole member/subscriber. The nominee\'s consent is required to be filed with the Registrar at incorporation.'
   },
   {
     category: 'Company Formation',

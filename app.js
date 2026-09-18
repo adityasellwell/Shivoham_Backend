@@ -15,6 +15,8 @@ import faqRoutes from "./modules/faqs/faqs.routes.js";
 import adminFaqRoutes from "./modules/admin/faqs/faqs.routes.js";
 import quoteConfigRoutes from "./modules/quoteConfig/quoteConfig.routes.js";
 import adminQuoteConfigRoutes from "./modules/admin/quoteConfig/quoteConfig.routes.js";
+import partnerLogosRoutes from "./modules/partnerLogos/partnerLogos.routes.js";
+import adminPartnerLogosRoutes from "./modules/admin/partnerLogos/partnerLogos.routes.js";
 import cors from 'cors';
 
 const app = express();
@@ -41,6 +43,7 @@ app.use('/api/consultations', consultationsRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/quote-config', quoteConfigRoutes);
+app.use('/api/partner-logos', partnerLogosRoutes);
 
 
 // ADMIN
@@ -52,6 +55,7 @@ app.use('/api/admin/quotes', adminQuotesRoutes);
 app.use('/api/admin/consultations', adminConsultationsRoutes);
 app.use('/api/admin/faqs', adminFaqRoutes);
 app.use('/api/admin/quote-config', adminQuoteConfigRoutes);
+app.use('/api/admin/partner-logos', adminPartnerLogosRoutes);
 
 app.get('/', (req, res) => {
   return res.status(200).json({
