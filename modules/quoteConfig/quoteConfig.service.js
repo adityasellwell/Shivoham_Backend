@@ -1,9 +1,100 @@
-import prisma from "../../config/prisma.js";
+const DEFAULT_SEED_DATA = [
+  {
+    keyId: "ipr",
+    title: "Intellectual Property Rights (IPR)",
+    description: "Protect your brand, inventions, creative works, and designs with our expert IP advisory and filing.",
+    icon: "Shield",
+    sortOrder: 1,
+    services: [
+      { title: "Trademark Registration", sortOrder: 1 },
+      { title: "Copyright Registration", sortOrder: 2 },
+      { title: "Patent Filing & Advisory", sortOrder: 3 },
+      { title: "Industrial Design Protection", sortOrder: 4 },
+      { title: "IPR Opposition & Rectification", sortOrder: 5 },
+    ],
+  },
+  {
+    keyId: "incorporation",
+    title: "Company Formation",
+    description: "Incorporate your business legally with the right corporate structure for scaling and investor readiness.",
+    icon: "Briefcase",
+    sortOrder: 2,
+    services: [
+      { title: "Private Limited Company", sortOrder: 1 },
+      { title: "Limited Liability Partnership (LLP)", sortOrder: 2 },
+      { title: "One Person Company (OPC)", sortOrder: 3 },
+      { title: "Partnership Firm", sortOrder: 4 },
+      { title: "Sole Proprietorship", sortOrder: 5 },
+      { title: "Section 8 / NGO / Trust", sortOrder: 6 },
+    ],
+  },
+  {
+    keyId: "licenses",
+    title: "Company Licenses & Compliance",
+    description: "Ensure absolute compliance and smooth operations with mandatory business registrations and licenses.",
+    icon: "FileCheck",
+    sortOrder: 3,
+    services: [
+      { title: "GST Registration & Returns", sortOrder: 1 },
+      { title: "Shop & Establishment (Gumasta)", sortOrder: 2 },
+      { title: "MSME / Udyam Registration", sortOrder: 3 },
+      { title: "FSSAI Food License", sortOrder: 4 },
+      { title: "Import Export Code (IEC)", sortOrder: 5 },
+      { title: "Digital Signature Certificate (DSC)", sortOrder: 6 },
+      { title: "ISO / CE / BIS Certifications", sortOrder: 7 },
+    ],
+  },
+];
+
+const DEFAULT_TURNOVERS = [
+  { label: "Less than ₹20 Lakhs", sortOrder: 1 },
+  { label: "₹20 Lakhs to ₹1 Crore", sortOrder: 2 },
+  { label: "₹1 Crore to ₹5 Crores", sortOrder: 3 },
+  { label: "₹5 Crores+", sortOrder: 4 },
+];
+
+export const seedDefaultQuoteConfig = async () => {
+  const count = await prisma.quoteCategory.count();
+  if (count === 0) {
+    for (const cat of DEFAULT_SEED_DATA) {
+      await prisma.quoteCategory.create({
+        data: {
+          keyId: cat.keyId,
+          title: cat.title,
+          description: cat.description,
+          icon: cat.icon,
+          sortOrder: cat.sortOrder,
+          isActive: true,
+          services: {
+            create: cat.services.map((s) => ({
+              title: s.title,
+              sortOrder: s.sortOrder,
+              isActive: true,
+            })),
+          },
+        },
+      });
+    }
+  }
+
+  const turnCount = await prisma.turnoverOption.count();
+  if (turnCount === 0) {
+    for (const t of DEFAULT_TURNOVERS) {
+      await prisma.turnoverOption.create({
+        data: {
+          label: t.label,
+          sortOrder: t.sortOrder,
+          isActive: true,
+        },
+      });
+    }
+  }
+};
 
 /* ============ CATEGORIES ============ */
 
 export const getQuoteCategories = async () => {
-  return await prisma.quoteCategory.findMany({
+  let categories = await prisma.quoteCategory.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
     include: {
@@ -13,9 +104,29 @@ export const getQuoteCategories = async () => {
       },
     },
   });
+
+  if (categories.length === 0) {
+    await seedDefaultQuoteConfig();
+    categories = await prisma.quoteCategory.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: "asc" },
+      include: {
+        services: {
+          where: { isActive: true },
+          orderBy: { sortOrder: "asc" },
+        },
+      },
+    });
+  }
+
+  return categories;
 };
 
 export const getAdminQuoteCategories = async () => {
+  const count = await prisma.quoteCategory.count();
+  if (count === 0) {
+    await seedDefaultQuoteConfig();
+  }
   return await prisma.quoteCategory.findMany({
     orderBy: { sortOrder: "asc" },
     include: { services: { orderBy: { sortOrder: "asc" } } },
